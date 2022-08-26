@@ -8,24 +8,24 @@ module.exports = {
           autoIncrement: true,
           allowNull: false,
           primaryKey: true,
-          type: Sequelize.INTEGER
+          type: Sequelize.INTEGER,
         },
         displayName: {
           allowNull: false,
-          type: Sequelize.String
+          type: Sequelize.STRING,
         },
         email: {
           allowNull: false,
-          type: Sequelize.String
+          type: Sequelize.STRING,
         },
         password: {
           allowNull: false,
-          type: Sequelize.String
+          type: Sequelize.STRING,
         },
         image: {
           allowNull: false,
-          type: Sequelize.String
-        }
+          type: Sequelize.STRING,
+        },
     });
   },
 
