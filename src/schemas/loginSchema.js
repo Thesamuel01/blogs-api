@@ -5,8 +5,4 @@ const schema = joi.object({
   password: joi.string().required(),
 });
 
-const validate = (login) => schema.validate(login);
-
-module.exports = {
-  validate,
-};
+module.exports = (login) => schema.validate(login);;

@@ -1,8 +1,8 @@
 const boom = require('@hapi/boom');
-const loginSchema = require('../schemas/loginSchema');
+const schemas = require('../schemas');
 
 module.exports = (req, _res, next) => {
-  const isReqBodyValid = loginSchema.validate(req.body);
+  const isReqBodyValid = schemas.validateLogin(req.body);
 
   if (!isReqBodyValid) throw boom.badRequest('Some required fields are missing');
 
