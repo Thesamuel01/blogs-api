@@ -1,10 +1,12 @@
 const express = require('express');
 const rescue = require('express-rescue');
 
+const middlewares = require('../middlewares');
+
 const loginRoute = express.Router();
 
-loginRoute.post('/', rescue((req, res) => {
-  console.log('POST - /login');
-}));
+loginRoute.post('/', [
+  rescue(middlewares.loginValidation),
+]);
 
 module.exports = loginRoute;
