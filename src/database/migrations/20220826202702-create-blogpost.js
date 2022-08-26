@@ -19,7 +19,7 @@ module.exports = {
       },
       userId: {
         allowNull: false,
-        field: 'user_id',
+        // field: 'user_id',
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
         type: Sequelize.INTEGER,
