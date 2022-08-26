@@ -1,7 +1,7 @@
 const express = require('express');
 
 // ...
-
+// Iniciando projeto
 const app = express();
 
 app.use(express.json());
