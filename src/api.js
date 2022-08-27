@@ -1,12 +1,12 @@
 const express = require('express');
 
-// ...
-// Iniciando projeto
+const middlewares = require('./middlewares');
+
 const app = express();
 
 app.use(express.json());
 
-// ...
+app.use(middlewares.errorHandler);
 
 // É importante exportar a constante `app`,
 // para que possa ser utilizada pelo arquivo `src/server.js`
