@@ -5,9 +5,9 @@ module.exports = (req, _res, next) => {
   const { error } = schemas.validateUser(req.body);
 
   if (error) {
-    const [statusCode, message] = error.message.split('|');
+    const { message } = error;
 
-    throw boom.boomify(new Error(message), { statusCode });
+    throw boom.badRequest(message);
   }
 
   next();
