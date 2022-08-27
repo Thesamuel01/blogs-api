@@ -21,7 +21,7 @@ const getToken = async (login) => {
 
   const token = tokens.createToken(login.email);
 
-  return res.status(200).json({ token });
+  return token;
 };
 
 module.exports = {
