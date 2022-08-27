@@ -12,7 +12,7 @@ const createToken = (payload) => {
 
 const validateToken = (token) => {
   jwt.verify(token, JWT_SECRET, (err, decode) => {
-    if(err) {
+    if (err) {
       throw boom.unauthorized('Expired or invalid token');
     }
 
