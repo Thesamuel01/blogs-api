@@ -11,6 +11,11 @@ userRoute.get('/', [
   rescue(userController.getAll),
 ]);
 
+userRoute.get('/:id', [
+  rescue(middlewares.auth),
+  rescue(userController.getUser),
+]);
+
 userRoute.post('/', [
   rescue(middlewares.userValidation),
   rescue(userController.create),
