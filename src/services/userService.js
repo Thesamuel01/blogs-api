@@ -41,9 +41,9 @@ const createUser = async ({ displayName, email, password, image }) => {
 const getAllUsers = async () => User.findAll({ attributes: { exclude: ['password'] } });
 
 const getUser = async (id) => {
-  const result = await User.findOne({ where: { id }, attributes: { exclude: ['password'] }});
+  const result = await User.findOne({ where: { id }, attributes: { exclude: ['password'] } });
 
-  if (!result ) throw boom.notFound('User does not exist');
+  if (!result) throw boom.notFound('User does not exist');
 
   return result;
 };
@@ -53,4 +53,3 @@ module.exports = {
   getAllUsers,
   getUser,
 };
-  
