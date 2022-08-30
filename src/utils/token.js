@@ -25,5 +25,4 @@ const validateToken = (token) => {
 module.exports = {
   createToken,
   validateToken,
-  decodeToken,
 };

@@ -31,7 +31,7 @@ const createPost = async ({ title, content, categoryIds }, userEmail) => {
     return postCreated;
   });
 
-  return result
+  return result;
 };
 
 module.exports = {

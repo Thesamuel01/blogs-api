@@ -7,7 +7,7 @@ const createCategory = async (name) => {
     return category;
   });
 
-  return result
+  return result;
 };
 
 const getAllCategories = async () => Category.findAll();
