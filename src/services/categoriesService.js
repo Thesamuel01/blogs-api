@@ -1,25 +1,13 @@
 const { Category, sequelize } = require('../database/models');
 
 const createCategory = async (name) => {
-  let category;
-  let transaction;
-  let dbError = null;
+  const result = await sequelize.transaction(async (transaction) => {
+    const category = await Category.create({ name }, { transaction });
 
-  try {
-    transaction = await sequelize.transaction();
+    return category;
+  });
 
-    category = await Category.create({ name }, { transaction });
-
-    await transaction.commit();
-  } catch (error) {
-    dbError = error;
-
-    await transaction.rollback();
-  }
-
-  if (dbError) throw new Error(dbError.message);
-
-  return category;
+  return result
 };
 
 const getAllCategories = async () => Category.findAll();
