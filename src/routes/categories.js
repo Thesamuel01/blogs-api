@@ -6,6 +6,11 @@ const categoriesController = require('../controllers/categoriesController');
 
 const categoriesRoute = express.Router();
 
+categoriesRoute.get('/', [
+  rescue(middlewares.auth),
+  rescue(categoriesController.getAll),
+]);
+
 categoriesRoute.post('/', [
   rescue(middlewares.auth),
   rescue(middlewares.categoryValidation),
