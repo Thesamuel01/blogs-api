@@ -3,6 +3,7 @@ const loginValidation = require('./loginValidation');
 const userValidation = require('./userValidation');
 const auth = require('./authorization');
 const categoryValidation = require('./categoriesValidation');
+const postValidation = require('./postValidation');
 
 module.exports = {
   errorHandler,
@@ -10,4 +11,5 @@ module.exports = {
   userValidation,
   auth,
   categoryValidation,
+  postValidation,
 };
