@@ -12,7 +12,8 @@ module.exports = (sequelize, DataTypes) => {
     userId: DataTypes.INTEGER,
     published: DataTypes.DATE,
     updated: DataTypes.DATE,
-  }, {
+  },
+  {
     timestamps: false,
     tableName: 'BlogPosts',
   });
