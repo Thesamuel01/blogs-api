@@ -11,16 +11,19 @@ const createToken = (payload) => {
 };
 
 const validateToken = (token) => {
-  jwt.verify(token, JWT_SECRET, (err, decode) => {
+  const values = jwt.verify(token, JWT_SECRET, (err, decode) => {
     if (err) {
       throw boom.unauthorized('Expired or invalid token');
     }
 
     return decode;
   });
+
+  return values;
 };
 
 module.exports = {
   createToken,
   validateToken,
+  decodeToken,
 };
