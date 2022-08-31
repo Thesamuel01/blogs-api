@@ -33,8 +33,18 @@ const getUser = async (id) => {
   return result;
 };
 
+const deleteUser = async (id) => {
+  await sequelize.transaction(async (transaction) => {
+    await User.destroy(
+      { where: { id } },
+      { transaction }
+    );
+  })
+};
+
 module.exports = {
   createUser,
   getAllUsers,
   getUser,
+  deleteUser,
 };
