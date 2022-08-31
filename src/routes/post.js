@@ -11,6 +11,11 @@ postRoute.get('/', [
   rescue(postController.getAll),
 ]);
 
+postRoute.get('/:id', [
+  rescue(middlewares.auth),
+  rescue(postController.getById),
+]);
+
 postRoute.post('/', [
   rescue(middlewares.auth),
   rescue(middlewares.postValidation),
