@@ -22,4 +22,10 @@ postRoute.post('/', [
   rescue(postController.create),
 ]);
 
+postRoute.put('/:id', [
+  rescue(middlewares.auth),
+  rescue(middlewares.postValidation),
+  rescue(postController.update),
+]);
+
 module.exports = postRoute;
