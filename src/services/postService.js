@@ -87,7 +87,7 @@ const deletePost = async (postId, { id: userId }) => {
 };
 
 const searchByTerm = async (search) => {
-  const getByTitle = await BlogPost.findAll({
+  const getByTerms = await BlogPost.findAll({
     where: {
       [Op.or]: [
         { title: { [Op.substring]: search } },
@@ -100,9 +100,7 @@ const searchByTerm = async (search) => {
     ],
   });
 
-  if (getByTitle.length !== 0) return getByTitle;
-
-  return [];
+  return getByTerms;
 };
 
 module.exports = {
