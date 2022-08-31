@@ -16,6 +16,12 @@ const checkCategoriesIds = async (categories) => Promise.all(
   if (hasCategoryNotFound) throw boom.badRequest('"categoryIds" not found');
 });
 
+const checkPostOwner = async (postId, userId) => {
+  const post = await BlogPost.findOne({ where: { id: postId, userId } });
+
+  if (!post) throw boom.unauthorized('Unauthorized user');
+};
+
 const createPost = async ({ title, content, categoryIds }, userEmail) => {
   const userId = await getUserIdByEmail(userEmail);
   await checkCategoriesIds(categoryIds);
@@ -53,14 +59,27 @@ const getPost = async (id) => {
       { model: Category, as: 'categories', through: { attributes: [] } },
     ],
   });
-  console.log(post);
+
   if (!post) throw boom.notFound('Post does not exist');
 
   return post;
+};
+
+const updatePost = async ({ id, title, content }, userEmail) => {
+  const userId = await getUserIdByEmail(userEmail);
+  
+  await checkPostOwner(id, userId);
+
+  await BlogPost.update({ title, content }, { where: { id } });
+
+  const postUpdated = await getPost(id);
+
+  return postUpdated;
 };
 
 module.exports = {
   createPost,
   getAllPosts,
   getPost,
+  updatePost,
 };
