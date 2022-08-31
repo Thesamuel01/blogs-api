@@ -10,12 +10,6 @@ const checkCategoriesIds = async (categories) => Promise.all(
   if (hasCategoryNotFound) throw boom.badRequest('"categoryIds" not found');
 });
 
-const checkPostOwner = async (postId, userId) => {
-  const post = await BlogPost.findOne({ where: { id: postId, userId } });
-
-  if (!post) throw boom.unauthorized('Unauthorized user');
-};
-
 const createPost = async ({ title, content, categoryIds }, userId) => {
   await checkCategoriesIds(categoryIds);
 
@@ -58,6 +52,12 @@ const getPost = async (id) => {
   return post;
 };
 
+const checkPostOwner = async (postId, userId) => {
+  const { userId: postOwner } = await getPost(postId);
+
+  if (postOwner !== userId) throw boom.unauthorized('Unauthorized user');
+};
+
 const updatePost = async ({ id, title, content }, userId) => {
   await checkPostOwner(id, userId);
 
@@ -75,7 +75,6 @@ const updatePost = async ({ id, title, content }, userId) => {
 };
 
 const deletePost = async (postId, { id: userId }) => {
-  await getPost(postId);
   await checkPostOwner(postId, userId);
 
   await sequelize.transaction(async (transaction) => {
