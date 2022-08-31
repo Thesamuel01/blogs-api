@@ -21,4 +21,9 @@ userRoute.post('/', [
   rescue(userController.create),
 ]);
 
+userRoute.delete('/me', [
+  rescue(middlewares.auth),
+  rescue(userController.destroy),
+]);
+
 module.exports = userRoute;
