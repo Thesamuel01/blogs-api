@@ -2,12 +2,6 @@ const boom = require('@hapi/boom');
 
 const { BlogPost, Category, PostCategory, User, sequelize } = require('../database/models');
 
-const getUserIdByEmail = async (email) => {
-  const user = await User.findOne({ where: { email } });
-
-  return user.id;
-};
-
 const checkCategoriesIds = async (categories) => Promise.all(
   categories.map(async (id) => Category.findByPk(id)),
 ).then((values) => {
@@ -22,8 +16,7 @@ const checkPostOwner = async (postId, userId) => {
   if (!post) throw boom.unauthorized('Unauthorized user');
 };
 
-const createPost = async ({ title, content, categoryIds }, userEmail) => {
-  const userId = await getUserIdByEmail(userEmail);
+const createPost = async ({ title, content, categoryIds }, userId) => {
   await checkCategoriesIds(categoryIds);
 
   const result = await sequelize.transaction(async (transaction) => {
