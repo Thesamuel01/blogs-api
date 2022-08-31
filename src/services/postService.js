@@ -77,9 +77,22 @@ const updatePost = async ({ id, title, content }, userEmail) => {
   return postUpdated;
 };
 
+const deletePost = async (postId, { id: userId }) => {
+  await getPost(postId);
+  await checkPostOwner(postId, userId);
+
+  await sequelize.transaction(async (transaction) => {
+    BlogPost.destroy({
+      where: { id: postId },
+    },
+    { transaction });
+  });
+};
+
 module.exports = {
   createPost,
   getAllPosts,
   getPost,
   updatePost,
+  deletePost,
 };
