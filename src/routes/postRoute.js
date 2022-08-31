@@ -11,6 +11,11 @@ postRoute.get('/', [
   rescue(postController.getAll),
 ]);
 
+postRoute.get('/search', [
+  rescue(middlewares.auth),
+  rescue(postController.search),
+]);
+
 postRoute.get('/:id', [
   rescue(middlewares.auth),
   rescue(postController.getById),
