@@ -6,9 +6,9 @@ module.exports = (req, _res, next) => {
 
   if (!authorization) throw boom.unauthorized('Token not found');
 
-  const { email } = tokenUtilities.validateToken(authorization);
+  const { email, id } = tokenUtilities.validateToken(authorization);
 
-  req.user = { email };
+  req.user = { email, id };
 
   next();
 };

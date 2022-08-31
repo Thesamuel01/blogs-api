@@ -11,7 +11,7 @@ const checkUser = async ({ email, password }) => {
     },
   });
 
-  return result !== null;
+  return result;
 };
 
 const getToken = async (login) => {
@@ -20,7 +20,7 @@ const getToken = async (login) => {
 
   if (!hasUser) throw boom.badRequest('Invalid fields');
 
-  const token = tokens.createToken({ email });
+  const token = tokens.createToken({ email, id: hasUser.id });
 
   return token;
 };
