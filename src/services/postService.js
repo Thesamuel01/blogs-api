@@ -1,4 +1,5 @@
 const boom = require('@hapi/boom');
+const { Op } = require('sequelize');
 
 const { BlogPost, Category, PostCategory, User, sequelize } = require('../database/models');
 
@@ -85,10 +86,30 @@ const deletePost = async (postId, { id: userId }) => {
   });
 };
 
+const searchByTerm = async (search) => {
+  const getByTitle = await BlogPost.findAll({
+    where: {
+      [Op.or]: [
+        { title: { [Op.substring]: search } },
+        { content: { [Op.substring]: search } },
+      ],
+    },
+    include: [
+      { model: User, as: 'user', attributes: { exclude: ['password'] } },
+      { model: Category, as: 'categories', through: { attributes: [] } },
+    ],
+  });
+
+  if (getByTitle.length !== 0) return getByTitle;
+
+  return [];
+};
+
 module.exports = {
   createPost,
   getAllPosts,
   getPost,
   updatePost,
   deletePost,
+  searchByTerm,
 };
