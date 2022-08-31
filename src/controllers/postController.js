@@ -32,10 +32,10 @@ const update = async (req, res) => {
   return res.status(200).json(postUpdated);
 };
 
-const deletePost = async (req, res) => {
+const destroy = async (req, res) => {
   const { id } = req.params;
   const { user } = req;
-  console.log(user);
+
   await postService.deletePost(id, user);
 
   return res.status(204).send();
@@ -46,5 +46,5 @@ module.exports = {
   getAll,
   getById,
   update,
-  deletePost,
+  destroy,
 };

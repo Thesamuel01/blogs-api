@@ -30,7 +30,7 @@ postRoute.put('/:id', [
 
 postRoute.delete('/:id', [
   rescue(middlewares.auth),
-  rescue(postController.deletePost),
+  rescue(postController.destroy),
 ]);
 
 module.exports = postRoute;
