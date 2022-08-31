@@ -65,12 +65,16 @@ const getPost = async (id) => {
   return post;
 };
 
-const updatePost = async ({ id, title, content }, userEmail) => {
-  const userId = await getUserIdByEmail(userEmail);
-  
+const updatePost = async ({ id, title, content }, userId) => {
   await checkPostOwner(id, userId);
 
-  await BlogPost.update({ title, content }, { where: { id } });
+  await sequelize.transaction(async (transaction) => {
+    await BlogPost.update(
+      { title, content },
+      { where: { id } },
+      { transaction },
+    );
+  });
 
   const postUpdated = await getPost(id);
 

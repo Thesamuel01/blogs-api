@@ -25,9 +25,9 @@ const getById = async (req, res) => {
 const update = async (req, res) => {
   const { id } = req.params;
   const post = { id, ...req.body };
-  const { email } = req.user;
+  const { id: userId } = req.user;
 
-  const postUpdated = await postService.updatePost(post, email);
+  const postUpdated = await postService.updatePost(post, userId);
 
   return res.status(200).json(postUpdated);
 };
