@@ -1,4 +1,5 @@
 const boom = require('@hapi/boom');
+const bcrypt = require('bcryptjs');
 
 const { User, sequelize } = require('../database/models');
 const tokens = require('../token');
@@ -14,8 +15,11 @@ const checkEmailRegister = async (email) => {
 const createUser = async ({ displayName, email, password, image }) => {
   await checkEmailRegister(email);
 
+  const salt = bcrypt.genSaltSync();
+  const hash = bcrypt.hashSync(password, salt);
+
   await sequelize.transaction(async (transaction) => {
-    await User.create({ displayName, email, password, image }, { transaction });
+    await User.create({ displayName, email, password: hash, image }, { transaction });
   });
 
   const token = tokens.generate({ email });

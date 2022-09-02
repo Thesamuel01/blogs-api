@@ -1,26 +1,28 @@
 const boom = require('@hapi/boom');
+const bcrypt = require('bcryptjs');
 
 const { User } = require('../database/models');
 const tokens = require('../token');
 
-const checkUser = async ({ email, password }) => {
-  const result = await User.findOne({
-    where: {
-      email,
-      password,
-    },
+const checkUserLogin = async ({ email, password }) => {
+  const user = await User.findOne({
+    where: { email },
   });
 
-  return result;
+  if (!user) return user;
+
+  const isPasswordCorrect = bcrypt.compareSync(password, user.password);
+
+  return isPasswordCorrect;
 };
 
 const getToken = async (login) => {
   const { email } = login;
-  const hasUser = await checkUser(login);
+  const isUser = await checkUserLogin(login);
 
-  if (!hasUser) throw boom.badRequest('Invalid fields');
+  if (!isUser) throw boom.badRequest('Invalid fields');
 
-  const token = tokens.generate({ email, id: hasUser.id });
+  const token = tokens.generate({ email, id: isUser.id });
 
   return token;
 };
