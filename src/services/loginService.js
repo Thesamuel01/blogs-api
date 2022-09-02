@@ -1,7 +1,7 @@
 const boom = require('@hapi/boom');
 
 const { User } = require('../database/models');
-const tokens = require('../utils/token');
+const tokens = require('../token');
 
 const checkUser = async ({ email, password }) => {
   const result = await User.findOne({
@@ -20,7 +20,7 @@ const getToken = async (login) => {
 
   if (!hasUser) throw boom.badRequest('Invalid fields');
 
-  const token = tokens.createToken({ email, id: hasUser.id });
+  const token = tokens.generate({ email, id: hasUser.id });
 
   return token;
 };

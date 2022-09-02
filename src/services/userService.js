@@ -1,7 +1,7 @@
 const boom = require('@hapi/boom');
 
 const { User, sequelize } = require('../database/models');
-const tokenUtilities = require('../utils/token');
+const tokens = require('../token');
 
 const checkEmailRegister = async (email) => {
   const result = await User.findOne({
@@ -18,7 +18,7 @@ const createUser = async ({ displayName, email, password, image }) => {
     await User.create({ displayName, email, password, image }, { transaction });
   });
 
-  const token = tokenUtilities.createToken({ email });
+  const token = tokens.generate({ email });
 
   return token;
 };

@@ -2,15 +2,8 @@ const boom = require('@hapi/boom');
 const jwt = require('jsonwebtoken');
 
 const { JWT_SECRET } = process.env;
-const JWT_OPTIONS = { algorithm: 'HS256', expiresIn: '1d' };
 
-const createToken = (payload) => {
-  const token = jwt.sign(payload, JWT_SECRET, JWT_OPTIONS);
-
-  return token;
-};
-
-const validateToken = (token) => {
+module.exports = (token) => {
   const values = jwt.verify(token, JWT_SECRET, (err, decode) => {
     if (err) {
       throw boom.unauthorized('Expired or invalid token');
@@ -20,9 +13,4 @@ const validateToken = (token) => {
   });
 
   return values;
-};
-
-module.exports = {
-  createToken,
-  validateToken,
 };
