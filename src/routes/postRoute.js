@@ -1,8 +1,9 @@
 const express = require('express');
 const rescue = require('express-rescue');
 
-const middlewares = require('../middlewares');
 const postController = require('../controllers/postController');
+const middlewares = require('../middlewares');
+const schemas = require('../schemas');
 
 const postRoute = express.Router();
 
@@ -23,13 +24,13 @@ postRoute.get('/:id', [
 
 postRoute.post('/', [
   rescue(middlewares.auth),
-  rescue(middlewares.postValidation),
+  rescue(middlewares.reqValidation(schemas.post, true)),
   rescue(postController.create),
 ]);
 
 postRoute.put('/:id', [
   rescue(middlewares.auth),
-  rescue(middlewares.postValidation),
+  rescue(middlewares.reqValidation(schemas.post, true)),
   rescue(postController.update),
 ]);
 

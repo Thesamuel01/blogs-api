@@ -1,11 +1,11 @@
-const validateLogin = require('./loginSchema');
-const validateUser = require('./userSchema');
-const validateCategory = require('./categorySchema');
-const validatePost = require('./postSchema');
+const login = require('./loginSchema');
+const user = require('./userSchema');
+const category = require('./categorySchema');
+const post = require('./postSchema');
 
 module.exports = {
-  validateLogin,
-  validateUser,
-  validateCategory,
-  validatePost,
+  login,
+  user,
+  category,
+  post,
 };

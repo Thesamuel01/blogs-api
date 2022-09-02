@@ -1,8 +1,9 @@
 const express = require('express');
 const rescue = require('express-rescue');
 
-const middlewares = require('../middlewares');
 const userController = require('../controllers/userController');
+const middlewares = require('../middlewares');
+const schemas = require('../schemas');
 
 const userRoute = express.Router();
 
@@ -17,7 +18,7 @@ userRoute.get('/:id', [
 ]);
 
 userRoute.post('/', [
-  rescue(middlewares.userValidation),
+  rescue(middlewares.reqValidation(schemas.user)),
   rescue(userController.create),
 ]);
 

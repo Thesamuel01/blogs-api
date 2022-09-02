@@ -1,13 +1,14 @@
 const express = require('express');
 const rescue = require('express-rescue');
 
-const middlewares = require('../middlewares');
 const loginController = require('../controllers/loginController');
+const middlewares = require('../middlewares');
+const schemas = require('../schemas');
 
 const loginRoute = express.Router();
 
 loginRoute.post('/', [
-  rescue(middlewares.loginValidation),
+  rescue(middlewares.reqValidation(schemas.login, true)),
   rescue(loginController.login),
 ]);
 

@@ -1,8 +1,6 @@
 const joi = require('joi');
 
-const schema = joi.object({
+module.exports = joi.object({
   email: joi.string().email().required(),
   password: joi.string().required(),
 });
-
-module.exports = (login) => schema.validate(login);
