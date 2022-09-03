@@ -11,6 +11,7 @@ app.use('/login', routes.login);
 app.use('/user', routes.user);
 app.use('/categories', routes.categories);
 app.use('/post', routes.post);
+app.use('/api-docs', routes.docs);
 
 app.use(middlewares.errorHandler);
 
