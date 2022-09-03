@@ -19,7 +19,7 @@
       "post": {
         "summary": "User Login",
         "description": "Logs user into system",
-        "tags": ["Users"],
+        "tags": ["Login"],
         "requestBody": {
           "required": true,
           "content": {
@@ -77,8 +77,123 @@
               }
             }
           },
-          "500": {
-            "description": "Internal Server Error",
+          "default": {
+            "$ref": "#/components/responses/GenericError"
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "summary": "Find all",
+        "description": "Return all users registered",
+        "tags": ["Users"],
+        "security": [{ "TokenAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Users"
+                },
+                "example": [
+                  {
+                  "id": 1,
+                  "displayName": "Lewis Hamilton",
+                  "email": "lewishamilton@gmail.com",
+                  "image": "https://upload.wikimedia.org/wikipedia/commons/1/18/Lewis_Hamilton_2016_Malaysia_2.jpg"
+                  },
+                  {
+                    "id": 2,
+                    "displayName": "Michael Schumacher",
+                    "email": "MichaelSchumacher@gmail.com",
+                    "image": "https://sportbuzz.uol.com.br/media/_versions/gettyimages-52491565_widelg.jpg"
+                  } 
+                ]
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "default": {
+            "$ref": "#/components/responses/GenericError"
+          }
+        }
+      },
+      "post": {
+        "summary": "Add a new user",
+        "description": "Create a user and return a token",
+        "tags": ["Users"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              },
+              "example": {
+                "displayName": "Brett Wiltshire",
+                "email": "brett@email.com",
+                "password": "123456",
+                "image": "http://4.bp.blogspot.com/_YA50adQ-7vQ/S1gfR_6ufpI/AAAAAAAAAAk/1ErJGgRWZDg/S45/brett.png"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Token"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "invalid-display-name": {
+                    "value": {
+                      "statusCode": 400,
+                      "error": "Bad Request",
+                      "message": "\"displayName\" length must be at least 8 characters long"
+                    }
+                  },
+                  "invalid-email": {
+                    "value": {
+                      "statusCode": 400,
+                      "error": "Bad Request",
+                      "message": "\"email\" must be a valid email"
+                    }
+                  },
+                  "invalid-password": {
+                    "value": {
+                      "statusCode": 400,
+                      "error": "Bad Request",
+                      "message": "\"password\" length must be at least 6 characters long"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "description": "User already registered",
             "content": {
               "application/json": {
                 "schema": {
@@ -86,12 +201,84 @@
                   "$ref": "#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "statusCode": 500,
-                  "error": "Internal Server Error",
-                  "message": "Generic Server Error"
+                  "statusCode": 409,
+                  "error": "Conflict",
+                  "message": "User already registered"
                 }
               }
             }
+          },
+          "default": {
+            "$ref": "#/components/responses/GenericError"
+          }
+        }
+      }
+    },
+    "/user/{id}": {
+      "get": {
+        "summary": "Find user by ID",
+        "description": "Find user by ID",
+        "tags": ["Users"],
+        "security": [{ "TokenAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User by ID",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/User"
+                },
+                "example": {
+                  "id": 1,
+                  "displayName": "Lewis Hamilton",
+                  "email": "lewishamilton@gmail.com",
+                  "image": "https://upload.wikimedia.org/wikipedia/commons/1/18/Lewis_Hamilton_2016_Malaysia_2.jpg"
+                }
+              }
+            }
+          },
+          "404": {
+            "description":"User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "statusCode": 404,
+                  "error": "Not Found",
+                  "message": "User does not exist"
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/GenericError"
+          }
+        }
+      }
+    },
+    "/user/me": {
+      "delete": {
+        "summary": "Delete user",
+        "tags": ["Users"],
+        "security": [{ "TokenAuth": [] }],
+        "responses": {
+          "204": {
+            "description": "User deleted"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         }
       }
@@ -124,6 +311,43 @@
           },
           "image": {
             "type": "string"
+          }
+        }
+      },
+      "UserResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          }
+        }
+      },
+      "Users":{
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number"
+            },
+            "displayName": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            },
+            "image": {
+              "type": "string"
+            }
           }
         }
       },
@@ -173,6 +397,47 @@
             "type": "string"
           }
         }
+      }
+    },
+    "securitySchemes": {
+      "TokenAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      }
+    },
+    "responses": {
+      "Unauthorized": {
+        "description":"Missing token",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "statusCode": 401,
+              "error": "Unauthorized",
+              "message": "Token not found"
+            }
+          }
+        }
+      },
+      "GenericError": {
+        "description": "Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "statusCode": 500,
+              "error": "Internal Server Error",
+              "message": "Unexpected error"
+            }
+          }
+        } 
       }
     }
   }
