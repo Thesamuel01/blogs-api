@@ -56,7 +56,7 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/Error"
                 },
                 "examples": {
                   "missing-fields": {
@@ -85,7 +85,7 @@
     },
     "/user": {
       "get": {
-        "summary": "Find all",
+        "summary": "Find all users",
         "description": "Return all users registered",
         "tags": ["Users"],
         "security": [{ "TokenAuth": [] }],
@@ -128,20 +128,7 @@
         "description": "Create a user and return a token",
         "tags": ["Users"],
         "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/User"
-              },
-              "example": {
-                "displayName": "Brett Wiltshire",
-                "email": "brett@email.com",
-                "password": "123456",
-                "image": "http://4.bp.blogspot.com/_YA50adQ-7vQ/S1gfR_6ufpI/AAAAAAAAAAk/1ErJGgRWZDg/S45/brett.png"
-              }
-            }
-          }
+          "$ref": "#/components/requestBodies/User"
         },
         "responses": {
           "201": {
@@ -161,7 +148,7 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/Error"
                 },
                 "examples": {
                   "invalid-display-name": {
@@ -198,7 +185,7 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/Error"
                 },
                 "example": {
                   "statusCode": 409,
@@ -252,7 +239,7 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/Error"
                 },
                 "example": {
                   "statusCode": 404,
@@ -279,6 +266,86 @@
           },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
+          },
+          "default": {
+            "$ref": "#/components/responses/GenericError"
+          }
+        }
+      }
+    },
+    "/categories": {
+      "get": {
+        "summary": "Find all categories",
+        "description": "Return all categories registered",
+        "tags": ["Categories"],
+        "security": [{ "TokenAuth": [] }],
+        "responses": {
+          "204": {
+            "description": "User deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Categories"
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "name": "Inovação"
+                  },
+                  {
+                      "id": 2,
+                      "name": "Escola"
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "default": {
+            "$ref": "#/components/responses/GenericError"
+          }
+        }
+      },
+      "post": {
+        "summary": "Add a new category",
+        "description": "Create a user and return a token",
+        "tags": ["Categories"],
+        "security": [{ "TokenAuth": [] }],
+        "requestBody": {
+          "$ref":"#/components/requestBodies/Category"
+        },
+        "responses": {
+          "201": {
+            "description": "Category created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "statusCode": 400,
+                  "error": "Bad Request",
+                  "message": "\"name\" is required"
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/GenericError"
           }
         }
       }
@@ -300,23 +367,6 @@
       "User": {
         "type": "object",
         "properties": {
-          "displayName": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          },
-          "image": {
-            "type": "string"
-          }
-        }
-      },
-      "UserResponse": {
-        "type": "object",
-        "properties": {
           "id": {
             "type": "number"
           },
@@ -331,32 +381,44 @@
           }
         }
       },
+      "UserSignUp": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          }
+        }
+      },
       "Users":{
         "type": "array",
         "items": {
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "number"
-            },
-            "displayName": {
-              "type": "string"
-            },
-            "email": {
-              "type": "string"
-            },
-            "image": {
-              "type": "string"
-            }
-          }
+          "$ref": "#/components/schemas/User"
         }
       },
       "Category": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string"
+          },
           "name": {
             "type": "string"
           }
+        }
+      },
+      "Categories": {
+        "type": "array",
+        "items": {
+          "$ref":"#/components/schemas/Category"
         }
       },
       "Post": {
@@ -384,7 +446,7 @@
           }
         }
       },
-      "ErrorResponse": {
+      "Error": {
         "type": "object",
         "properties": {
           "statusCode": {
@@ -399,13 +461,6 @@
         }
       }
     },
-    "securitySchemes": {
-      "TokenAuth": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "Authorization"
-      }
-    },
     "responses": {
       "Unauthorized": {
         "description":"Missing token",
@@ -413,7 +468,7 @@
           "application/json": {
             "schema": {
               "type": "object",
-              "$ref": "#/components/schemas/ErrorResponse"
+              "$ref": "#/components/schemas/Error"
             },
             "example": {
               "statusCode": 401,
@@ -429,7 +484,7 @@
           "application/json": {
             "schema": {
               "type": "object",
-              "$ref": "#/components/schemas/ErrorResponse"
+              "$ref": "#/components/schemas/Error"
             },
             "example": {
               "statusCode": 500,
@@ -437,7 +492,50 @@
               "message": "Unexpected error"
             }
           }
-        } 
+        }
+      }
+    },
+    "requestBodies": {
+      "User": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UserSignUp"
+            },
+            "example": {
+              "displayName": "Brett Wiltshire",
+              "email": "brett@email.com",
+              "password": "123456",
+              "image": "http://4.bp.blogspot.com/_YA50adQ-7vQ/S1gfR_6ufpI/AAAAAAAAAAk/1ErJGgRWZDg/S45/brett.png"
+            }
+          }
+        }
+      },
+      "Category": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              }
+            },
+            "example": {
+              "name": "Python"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "TokenAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
       }
     }
   }
