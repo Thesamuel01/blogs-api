@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Blogs API",
-    "description": "Blogs API is a simplify system to manage users and posts from a blog.",
+    "description": "An API designed to manage users and their posts in a database using an ORM",
     "contact": {
       "email": "samueldev8@gmail.com"
     },
