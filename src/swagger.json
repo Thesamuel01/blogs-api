@@ -87,7 +87,7 @@
       "get": {
         "summary": "Find all users",
         "description": "Return all users registered",
-        "tags": ["Users"],
+        "tags": ["User"],
         "security": [{ "TokenAuth": [] }],
         "responses": {
           "200": {
@@ -95,8 +95,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "$ref": "#/components/schemas/Users"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
                 },
                 "example": [
                   {
@@ -126,7 +128,7 @@
       "post": {
         "summary": "Add a new user",
         "description": "Create a user and return a token",
-        "tags": ["Users"],
+        "tags": ["User"],
         "requestBody": {
           "$ref": "#/components/requestBodies/User"
         },
@@ -205,7 +207,7 @@
       "get": {
         "summary": "Find user by ID",
         "description": "Find user by ID",
-        "tags": ["Users"],
+        "tags": ["User"],
         "security": [{ "TokenAuth": [] }],
         "parameters": [
           {
@@ -258,7 +260,7 @@
     "/user/me": {
       "delete": {
         "summary": "Delete user",
-        "tags": ["Users"],
+        "tags": ["User"],
         "security": [{ "TokenAuth": [] }],
         "responses": {
           "204": {
@@ -310,7 +312,7 @@
       },
       "post": {
         "summary": "Add a new category",
-        "description": "Create a user and return a token",
+        "description": "Create a category",
         "tags": ["Categories"],
         "security": [{ "TokenAuth": [] }],
         "requestBody": {
@@ -349,59 +351,452 @@
           }
         }
       }
+    },
+    "/post": {
+      "get": {
+        "summary": "Find all posts",
+        "description": "Return all posts registered",
+        "tags": ["Post"],
+        "security": [{ "TokenAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "$ref": "#/components/schemas/Post",
+                    "properties": {
+                      "user": {
+                        "$ref": "#/components/schemas/User"
+                      },
+                      "categories": {
+                        "$ref": "#/components/schemas/Categories"
+                      }
+                    }
+                  }
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "title": "Post do Ano",
+                    "content": "Melhor post do ano",
+                    "userId": 1,
+                    "published": "2011-08-01T19:58:00.000Z",
+                    "updated": "2011-08-01T19:58:51.000Z",
+                    "user": {
+                      "id": 1,
+                      "displayName": "Lewis Hamilton",
+                      "email": "lewishamilton@gmail.com",
+                      "image": "https://upload.wikimedia.org/wikipedia/commons/1/18/Lewis_Hamilton_2016_Malaysia_2.jpg"
+                    },
+                    "categories": [
+                      {
+                        "id": 1,
+                        "name": "Inovação"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "default": {
+            "$ref": "#/components/responses/GenericError"
+          }
+        }
+      },
+      "post": {
+        "summary": "Add a new post",
+        "description": "Create a post",
+        "tags": ["Post"],
+        "security": [{ "TokenAuth": [] }],
+        "requestBody": {
+          "$ref":"#/components/requestBodies/Post"
+        },
+        "responses": {
+          "201": {
+            "description": "Post created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Post"
+                },
+                "example": {
+                  "id": 3,
+                  "title": "Latest updates, August 1st",
+                  "content": "The whole text for the blog post goes here in this key",
+                  "userId": 1,
+                  "updated": "2022-05-18T18:00:01.196Z",
+                  "published": "2022-05-18T18:00:01.196Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "examples": {
+                  "blank-fields":{
+                    "value": {
+                      "statusCode": 400,
+                      "error": "Bad Request",
+                      "message": "Some required fields are missing"
+                    }
+                  },
+                  "category-not-found":{
+                    "value": {
+                      "statusCode": 400,
+                      "error": "Bad Request",
+                      "message": "\"categoryIds\" not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/GenericError"
+          }
+        }
+      }
+    },
+    "/post/{id}": {
+      "get": {
+        "summary": "Find post by ID",
+        "description": "Find post by ID",
+        "tags": ["Post"],
+        "security": [{ "TokenAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Post by ID",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Post",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    },
+                    "categories": {
+                      "$ref": "#/components/schemas/Categories"
+                    }
+                  }
+                },
+                "example": {
+                  "id": 1,
+                  "title": "Post do Ano",
+                  "content": "Melhor post do ano",
+                  "userId": 1,
+                  "published": "2011-08-01T19:58:00.000Z",
+                  "updated": "2011-08-01T19:58:51.000Z",
+                  "user": {
+                    "id": 1,
+                    "displayName": "Lewis Hamilton",
+                    "email": "lewishamilton@gmail.com",
+                    "image": "https://upload.wikimedia.org/wikipedia/commons/1/18/Lewis_Hamilton_2016_Malaysia_2.jpg"
+                  },
+                  "categories": [
+                    {
+                      "id": 1,
+                      "name": "Inovação"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "description":"Post not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "statusCode": 404,
+                  "error": "Not Found",
+                  "message": "Post does not exist"
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/GenericError"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete post",
+        "tags": ["Post"],
+        "security": [{ "TokenAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Post by ID",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Post deleted"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "description":"Post not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "statusCode": 404,
+                  "error": "Not Found",
+                  "message": "Post does not exist"
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/GenericError"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update post",
+        "tags": ["Post"],
+        "security": [{ "TokenAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Post by ID",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "$ref":"#/components/requestBodies/PostUpdate"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Post",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    },
+                    "categories": {
+                      "$ref": "#/components/schemas/Categories"
+                    }
+                  }
+                },
+                "example": {
+                  "id": 3,
+                  "title": "Latest updates, August 1st",
+                  "content": "The whole text for the blog post goes here in this key",
+                  "userId": 1,
+                  "published": "2022-05-18T18:00:01.000Z",
+                  "updated": "2022-05-18T18:07:32.000Z",
+                  "user": {
+                    "id": 1,
+                    "displayName": "Lewis Hamilton",
+                    "email": "lewishamilton@gmail.com",
+                    "image": "https://upload.wikimedia.org/wikipedia/commons/1/18/Lewis_Hamilton_2016_Malaysia_2.jpg"
+                  },
+                  "categories": [
+                    {
+                      "id": 1,
+                      "name": "Inovação"
+                    },
+                    {
+                      "id": 2,
+                      "name": "Escola"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "example": {
+                  "statusCode": 400,
+                  "error": "Bad Request",
+                  "message": "Some required fields are missing"
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/GenericError"
+          }
+        }
+      }
+    },
+    "/post/search": {
+      "get": {
+        "summary": "Find posts by terms",
+        "tags": ["Post"],
+        "security": [{ "TokenAuth": [] }],
+        "parameters": [
+          {
+            "allowEmptyValue": true,
+            "name": "q",
+            "in": "query",
+            "description": "Terms about post content or title to search"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Post",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    },
+                    "categories": {
+                      "$ref": "#/components/schemas/Categories"
+                    }
+                  }
+                },
+                "examples": {
+                  "found-by-title-or-content": {
+                    "value": [
+                      {
+                        "id": 2,
+                        "title": "Vamos que vamos",
+                        "content": "Foguete não tem ré",
+                        "userId": 1,
+                        "published": "2011-08-01T19:58:00.000Z",
+                        "updated": "2011-08-01T19:58:51.000Z",
+                        "user": {
+                          "id": 1,
+                          "displayName": "Lewis Hamilton",
+                          "email": "lewishamilton@gmail.com",
+                          "image": "https://upload.wikimedia.org/wikipedia/commons/1/18/Lewis_Hamilton_2016_Malaysia_2.jpg"
+                        },
+                        "categories": [
+                          {
+                            "id": 2,
+                            "name": "Escola"
+                          }
+                        ]
+                      }
+                  ]
+                  },
+                  "blank-term-search": {
+                    "value": [
+                      {
+                        "id": 1,
+                        "title": "Post do Ano",
+                        "content": "Melhor post do ano",
+                        "userId": 1,
+                        "published": "2011-08-01T19:58:00.000Z",
+                        "updated": "2011-08-01T19:58:51.000Z",
+                        "user": {
+                          "id": 1,
+                          "displayName": "Lewis Hamilton",
+                          "email": "lewishamilton@gmail.com",
+                          "image": "https://upload.wikimedia.org/wikipedia/commons/1/18/Lewis_Hamilton_2016_Malaysia_2.jpg"
+                        },
+                        "categories": [
+                          {
+                            "id": 1,
+                            "name": "Inovação"
+                          }
+                        ]
+                      },
+                      {
+                        "id": 2,
+                        "title": "Vamos que vamos",
+                        "content": "Foguete não tem ré",
+                        "userId": 1,
+                        "published": "2011-08-01T19:58:00.000Z",
+                        "updated": "2011-08-01T19:58:51.000Z",
+                        "user": {
+                          "id": 1,
+                          "displayName": "Lewis Hamilton",
+                          "email": "lewishamilton@gmail.com",
+                          "image": "https://upload.wikimedia.org/wikipedia/commons/1/18/Lewis_Hamilton_2016_Malaysia_2.jpg"
+                        },
+                        "categories": [
+                          {
+                            "id": 2,
+                            "name": "Escola"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "not-found": {
+                    "value": []
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
-      "Login": {
+      "ApiResponse": {
         "type": "object",
         "properties": {
-          "email": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          }
-        }
-      },
-      "User": {
-        "type": "object",
-        "properties": {
-          "id": {
+          "statusCode": {
             "type": "number"
           },
-          "displayName": {
+          "error": {
             "type": "string"
           },
-          "email": {
-            "type": "string"
-          },
-          "image": {
+          "message": {
             "type": "string"
           }
-        }
-      },
-      "UserSignUp": {
-        "type": "object",
-        "properties": {
-          "displayName": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          },
-          "image": {
-            "type": "string"
-          }
-        }
-      },
-      "Users":{
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/User"
         }
       },
       "Category": {
@@ -421,8 +816,51 @@
           "$ref":"#/components/schemas/Category"
         }
       },
+      "Login": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
       "Post": {
         "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "title": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "number"
+          },
+          "published": {
+            "type": "string"
+          },
+          "updated": {
+            "type": "string"
+          }
+        }
+      },
+      "PostBody": {
+        "type": "object",
+        "required": [
+          "title",
+          "content",
+          "categoryIds"
+        ],
         "properties": {
           "title": {
             "type": "string"
@@ -438,6 +876,21 @@
           }
         }
       },
+      "PostUpdateBody": {
+        "type": "object",
+        "required": [
+          "title",
+          "content"
+        ],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
+        }
+      },
       "Token": {
         "type": "object",
         "properties": {
@@ -446,22 +899,65 @@
           }
         }
       },
-      "Error": {
+      "User": {
         "type": "object",
         "properties": {
-          "statusCode": {
+          "id": {
             "type": "number"
           },
-          "error": {
+          "displayName": {
             "type": "string"
           },
-          "message": {
+          "email": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          }
+        }
+      },
+      "UserBody": {
+        "type": "object",
+        "required": [
+          "displayName",
+          "email",
+          "password"
+        ],
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "minLength": 8
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6
+          },
+          "image": {
             "type": "string"
           }
         }
       }
     },
     "responses": {
+      "GenericError": {
+        "description": "Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "$ref": "#/components/schemas/ApiResponse"
+            },
+            "example": {
+              "statusCode": 500,
+              "error": "Internal Server Error",
+              "message": "Unexpected error"
+            }
+          }
+        }
+      },
       "Unauthorized": {
         "description":"Missing token",
         "content": {
@@ -477,47 +973,16 @@
             }
           }
         }
-      },
-      "GenericError": {
-        "description": "Server Error",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "$ref": "#/components/schemas/Error"
-            },
-            "example": {
-              "statusCode": 500,
-              "error": "Internal Server Error",
-              "message": "Unexpected error"
-            }
-          }
-        }
       }
     },
     "requestBodies": {
-      "User": {
-        "required": true,
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/UserSignUp"
-            },
-            "example": {
-              "displayName": "Brett Wiltshire",
-              "email": "brett@email.com",
-              "password": "123456",
-              "image": "http://4.bp.blogspot.com/_YA50adQ-7vQ/S1gfR_6ufpI/AAAAAAAAAAk/1ErJGgRWZDg/S45/brett.png"
-            }
-          }
-        }
-      },
       "Category": {
         "required": true,
         "content": {
           "application/json": {
             "schema": {
               "type": "object",
+              "required": ["name"],
               "properties": {
                 "name": {
                   "type": "string"
@@ -526,6 +991,51 @@
             },
             "example": {
               "name": "Python"
+            }
+          }
+        }
+      },
+      "Post": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/PostBody"
+            },
+            "example": {
+              "title": "Latest updates, August 1st",
+              "content": "The whole text for the blog post goes here in this key",
+              "categoryIds": [1, 2]
+            }
+          }
+        }
+      },
+      "PostUpdate": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/PostUpdateBody"
+            },
+            "example": {
+              "title": "Latest updates, August 1st",
+              "content": "The whole text for the blog post goes here in this key"
+            }
+          }
+        }
+      },
+      "User": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UserBody"
+            },
+            "example": {
+              "displayName": "Brett Wiltshire",
+              "email": "brett@email.com",
+              "password": "123456",
+              "image": "http://4.bp.blogspot.com/_YA50adQ-7vQ/S1gfR_6ufpI/AAAAAAAAAAk/1ErJGgRWZDg/S45/brett.png"
             }
           }
         }
