@@ -1,30 +1,28 @@
-const express = require('express');
+const router = require('express').Router();
 const rescue = require('express-rescue');
 
-const userController = require('../controllers/userController');
+const { userController } = require('../controllers');
 const middlewares = require('../middlewares');
 const schemas = require('../schemas');
 
-const userRoute = express.Router();
-
-userRoute.get('/', [
+router.get('/', [
   rescue(middlewares.auth),
   rescue(userController.getAll),
 ]);
 
-userRoute.get('/:id', [
+router.get('/:id', [
   rescue(middlewares.auth),
   rescue(userController.getUser),
 ]);
 
-userRoute.post('/', [
+router.post('/', [
   rescue(middlewares.reqValidation(schemas.user)),
   rescue(userController.create),
 ]);
 
-userRoute.delete('/me', [
+router.delete('/me', [
   rescue(middlewares.auth),
   rescue(userController.destroy),
 ]);
 
-module.exports = userRoute;
+module.exports = router;

@@ -1,4 +1,4 @@
-const postService = require('../services/postService');
+const { postService } = require('../services');
 
 const create = async (req, res) => {
   const { id: userId } = req.user;

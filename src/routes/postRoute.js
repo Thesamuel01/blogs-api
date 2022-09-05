@@ -1,42 +1,40 @@
-const express = require('express');
+const router = require('express').Router();
 const rescue = require('express-rescue');
 
-const postController = require('../controllers/postController');
+const { postController } = require('../controllers');
 const middlewares = require('../middlewares');
 const schemas = require('../schemas');
 
-const postRoute = express.Router();
-
-postRoute.get('/', [
+router.get('/', [
   rescue(middlewares.auth),
   rescue(postController.getAll),
 ]);
 
-postRoute.get('/search', [
+router.get('/search', [
   rescue(middlewares.auth),
   rescue(postController.search),
 ]);
 
-postRoute.get('/:id', [
+router.get('/:id', [
   rescue(middlewares.auth),
   rescue(postController.getById),
 ]);
 
-postRoute.post('/', [
+router.post('/', [
   rescue(middlewares.auth),
   rescue(middlewares.reqValidation(schemas.post, true)),
   rescue(postController.create),
 ]);
 
-postRoute.put('/:id', [
+router.put('/:id', [
   rescue(middlewares.auth),
   rescue(middlewares.reqValidation(schemas.post, true)),
   rescue(postController.update),
 ]);
 
-postRoute.delete('/:id', [
+router.delete('/:id', [
   rescue(middlewares.auth),
   rescue(postController.destroy),
 ]);
 
-module.exports = postRoute;
+module.exports = router;

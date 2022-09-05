@@ -1,21 +1,19 @@
-const express = require('express');
+const router = require('express').Router();
 const rescue = require('express-rescue');
 
-const categoriesController = require('../controllers/categoriesController');
+const { categoriesController } = require('../controllers');
 const middlewares = require('../middlewares');
 const schemas = require('../schemas');
 
-const categoriesRoute = express.Router();
-
-categoriesRoute.get('/', [
+router.get('/', [
   rescue(middlewares.auth),
   rescue(categoriesController.getAll),
 ]);
 
-categoriesRoute.post('/', [
+router.post('/', [
   rescue(middlewares.auth),
   rescue(middlewares.reqValidation(schemas.category)),
   rescue(categoriesController.create),
 ]);
 
-module.exports = categoriesRoute;
+module.exports = router;
