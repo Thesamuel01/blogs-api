@@ -76,15 +76,9 @@ JWT_SECRET=
 npm install
 ```
 
-### Built and populate database.
-```
-npm run prestart
-npm run seed
-```
-
 ### Run node server.
 ```
-npm run start
+npm start
 ```
 
 ## Running with docker
@@ -105,15 +99,9 @@ docker exec -it blogs_api bash
 npm install
 ```
 
-### Built and populate database.
-```
-npm run prestart
-npm run seed
-```
-
 ### Run node server.
 ```
-npm run start
+npm start
 ```
 
 # Documentation
