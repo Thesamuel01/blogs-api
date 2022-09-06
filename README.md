@@ -88,8 +88,7 @@ npm start
 cd blogs-api
 docker-compose up -d
 ```
-
-### Entering the bash terminal from the Node container.
+### Entering into bash terminal from Node container.
 ```
 docker exec -it blogs_api bash
 ```
