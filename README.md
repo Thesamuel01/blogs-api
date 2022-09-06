@@ -19,7 +19,7 @@ Blogs API is a web system developed to receive and response HTTP requests to man
 This API allows doing via HTTP requests:
  - Log in to System
  - Create, delete and find users
- - Create, delete, find and Update a posts
+ - Create, delete, find and Update blog posts
  - Create and find categories
 
 # Technologies and Tools Used
