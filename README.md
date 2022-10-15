@@ -8,7 +8,7 @@ Blogs API is a web system developed to receive and response HTTP requests to man
 - [Blogs API](#blogs-api)
 - [Summary](#summary)
 - [Context](#context)
-- [Technologies and Tools Used](#technologies-and-tools-used)
+- [Technologies and Tools](#technologies-and-tools)
 - [Notes](#notes)
 - [Git and Commits](#git-github-and-commit-history)
 - [Lint](#lint)
@@ -22,7 +22,7 @@ This API allows doing via HTTP requests:
  - Create, delete, find and Update blog posts
  - Create and find categories
 
-# Technologies and Tools Used
+# Technologies and Tools
 This project used the following technologies and tools:
   * __Node__ | [Javascript Runtime Environment](https://reactjs.org/docs/thinking-in-react.html)
   * __Express__ | [Web Framework for NodeJS](https://redux-toolkit.js.org/introduction/getting-started)
